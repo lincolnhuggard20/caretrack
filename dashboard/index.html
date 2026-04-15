@@ -452,18 +452,25 @@ function initApp() {
 
 // ── DATE HELPERS (Brisbane time) ──
 // FIX: Simple, reliable AEST function — replaces the broken version
-function getAEST() {
-  return new Date(new Date().toLocaleString("en-AU", { timeZone: "Australia/Brisbane" }));
+// ── DATE HELPERS (Brisbane = UTC+10, no DST) ──
+function getBrisbaneISOString() {
+  const brisbane = new Date(Date.now() + 10 * 60 * 60 * 1000);
+  return brisbane.toISOString();
 }
-function getWeekKey(d = new Date()) {
-  const day = new Date(d);
-  const diff = day.getDate() - day.getDay() + (day.getDay() === 0 ? -6 : 1);
-  day.setDate(diff);
-  return "week_" + day.toISOString().split("T")[0];
+function getWeekKey() {
+  const iso = getBrisbaneISOString();
+  const d   = new Date(iso);
+  const day = d.getUTCDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  const monday = new Date(d);
+  monday.setUTCDate(d.getUTCDate() + diff);
+  return "week_" + monday.toISOString().split("T")[0];
 }
-function getDayKey(d = new Date()) {
-  return d.toISOString().split("T")[0];
+function getDayKey() {
+  return getBrisbaneISOString().split("T")[0];
 }
+// kept for legacy calls that pass a date argument
+function getAEST() { return new Date(); }
 
 // ── WARD TABS ──
 function buildWardTabs() {
@@ -482,9 +489,8 @@ function buildWardTabs() {
 // ── LOAD ALL WARDS ──
 async function loadWardData() {
   document.getElementById("table-container").innerHTML = '<div class="loading-msg">Loading…</div>';
-  const aest    = getAEST();
-  const weekKey = getWeekKey(aest);
-  const dayKey  = getDayKey(aest);
+  const weekKey = getWeekKey();
+  const dayKey  = getDayKey();
   const cutoff  = Date.now() - 24 * 60 * 60 * 1000;
 
   wardDataCache = {};
@@ -665,17 +671,25 @@ function toggleWeekPanel() {
 }
 
 function buildWeekSelector() {
-  const wrap  = document.getElementById("week-selector");
+  const wrap = document.getElementById("week-selector");
   wrap.innerHTML = "";
-  const today = getAEST();
+
+  // Base from Brisbane "now" as a plain UTC date offset by +10h
+  const nowBrisbane = new Date(Date.now() + 10 * 60 * 60 * 1000);
 
   for (let i = 0; i < 8; i++) {
-    const d   = new Date(today);
-    d.setDate(d.getDate() - i * 7);
-    const wk  = getWeekKey(d);
-    const mon = new Date(d); mon.setDate(mon.getDate() - mon.getDay() + (mon.getDay() === 0 ? -6 : 1));
-    const sun = new Date(mon); sun.setDate(sun.getDate() + 6);
-    const label = `${mon.getDate()}/${mon.getMonth()+1} – ${sun.getDate()}/${sun.getMonth()+1}`;
+    // Go back i weeks from today
+    const d = new Date(nowBrisbane);
+    d.setUTCDate(d.getUTCDate() - i * 7);
+
+    // Find Monday of that week
+    const dow  = d.getUTCDay();
+    const diff = dow === 0 ? -6 : 1 - dow;
+    const mon  = new Date(d); mon.setUTCDate(d.getUTCDate() + diff);
+    const sun  = new Date(mon); sun.setUTCDate(mon.getUTCDate() + 6);
+
+    const wk    = "week_" + mon.toISOString().split("T")[0];
+    const label = `${mon.getUTCDate()}/${mon.getUTCMonth()+1} – ${sun.getUTCDate()}/${sun.getUTCMonth()+1}`;
 
     const btn = document.createElement("button");
     btn.className = "week-btn" + (i === 0 ? " active" : "");
