@@ -22,11 +22,11 @@
 :root {
   --ward-primary: #2D6A4F;
   --ward-accent:  #52B788;
-  --bg:     #3D4849;
+  --bg:     #0F1410;
   --card:   #161D17;
   --border: #1E2B1F;
-  --text:   #FFFFFF;
-  --muted:  #FFFFFF;
+  --text:   #E8F0E9;
+  --muted:  #6B8C6D;
   --danger: #E05252;
   --warn:   #D4A24A;
   --ok:     #52B788;
@@ -787,7 +787,7 @@ async function submitAll() {
       source:     "handover" // marks this was entered via handover page
     };
 
-    const path = `wards/${ward}/residents/${resId}/entries/${weekKey}/${dayKey}/${now}_${room}`;
+    const path = `wards/${ward}/residents/${resId}/entries/${weekKey}/${dayKey}/${now}`;
     // Also store room number for dashboard
     writes.push(db.ref(`wards/${ward}/residents/${resId}/room`).set(String(room)));
     writes.push(db.ref(path).set(entry));
