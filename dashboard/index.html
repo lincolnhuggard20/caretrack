@@ -433,7 +433,7 @@ const WARDS = ["Acacia","Jacaranda","Melaleuca","Grevillea","Banksia"];
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const auth = firebase.auth()
+const auth = firebase.auth();
    
 let historicalcache = {};
 let activeWard    = "Acacia";
@@ -454,7 +454,7 @@ function updatePinDots() {
 function checkPin() {
   if (pinVal === STAFF_PIN) {
 
-    firebase.auth().signInAnonymously();
+    firebase.auth().signInAnonymously()
       .then(() => {
         // ✅ Auth succeeded
         document.getElementById("pin-gate").style.display = "none";
