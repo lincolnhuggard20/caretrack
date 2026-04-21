@@ -418,7 +418,7 @@ document.getElementById("room-name-display").textContent = "Room " + room;
 document.getElementById("header-date").textContent = new Date().toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short"});
 
 // ── FIREBASE ──
-firebase.initializeApp(firebase_Config);
+firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 // ── DATE HELPERS (Brisbane = UTC+10, no DST) ──
