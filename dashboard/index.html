@@ -447,7 +447,12 @@ let modalRoom     = null; // currently open room data
 // ── PIN ──
 
 function pinPress(n) {
-  alert("PIN BUTTON PRESSED: " + n);
+  if (pinVal.length >= 4) return;
+  pinVal += n;
+  updatePinDots();
+  if (pinVal.length === 4) {
+    setTimeout(checkPin, 200);
+  }
 }
 
 function checkPin() {
@@ -470,11 +475,13 @@ function checkPin() {
   } else {
     document.getElementById("pin-error").textContent = "Incorrect PIN";
     pinVal = "";
-    updatePinDots();
-    setTimeout(() =>
-      document.getElementById("pin-error").textContent = "", 2000
-    );
-  }
+
+function updatePinDots() {
+  [0,1,2,3].forEach(i => {
+    const dot = document.getElementById("d" + i);
+    if (!dot) return; // ✅ prevent crash
+    dot.classList.toggle("filled", i < pinVal.length);
+  });
 }
 
 // ── INIT ──
