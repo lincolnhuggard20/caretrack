@@ -387,14 +387,14 @@ body {
 // ════════════════════════════════════════════════
 // FIREBASE CONFIG — paste your new project values here
 // ════════════════════════════════════════════════
-const FIREBASE_CONFIG = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
-  databaseURL:       "https://YOUR_PROJECT_ID-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "YOUR_PROJECT_ID.firebasestorage.app",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId:             "YOUR_APP_ID"
+const firebaseConfig = {
+  apiKey: "AIzaSyAAkDnIWux7w07bwY9xs_XsuFd9J7D_hqw",
+  authDomain: "caretrack-28ca3.firebaseapp.com",
+  databaseURL: "https://caretrack-28ca3-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "caretrack-28ca3",
+  storageBucket: "caretrack-28ca3.firebasestorage.app",
+  messagingSenderId: "347899862763",
+  appId: "1:347899862763:web:6387583135eff793d968ae",
 };
 
 // ════════════════════════════════════════════════
@@ -448,7 +448,7 @@ if (WARD_COLORS[ward]) {
 }
 
 // ── FIREBASE ──
-firebase.initializeApp(FIREBASE_CONFIG);
+firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 // ── DATE HELPERS (Brisbane = UTC+10, no DST) ──
