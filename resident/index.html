@@ -19,8 +19,8 @@
   --bg:     #0F1410;
   --card:   #161D17;
   --border: #1E2B1F;
-  --text:   #E8F0E9;
-  --muted:  #6B8C6D;
+  --text:   #FFFFFF;
+  --muted:  #FFFFFF;
   --danger: #E05252;
   --warn:   #D4A24A;
   --radius: 14px;
@@ -399,11 +399,12 @@ const WARD_COLORS = {
 };
 
 // ── READ URL PARAMETERS ──
-// Each NFC tag encodes: ?ward=Acacia&room=1A&id=acacia_1a
+// NFC tag URL format: ?ward=Acacia&room=1  (no ?id= needed — resId auto-generated)
 const params = new URLSearchParams(location.search);
 const ward   = params.get("ward") || "Acacia";
-const room   = params.get("room") || "Unknown";
-const resId  = params.get("id")   || room.toLowerCase().replace(/\s+/g, "_");
+const room   = params.get("room") || "0";
+// resId is always ward_room (e.g. acacia_1) — matches handover and dashboard exactly
+const resId  = ward.toLowerCase() + "_" + room;
 
 // ── APPLY WARD COLOUR THEME ──
 if (WARD_COLORS[ward]) {
