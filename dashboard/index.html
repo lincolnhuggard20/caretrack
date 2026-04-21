@@ -445,11 +445,20 @@ let modalRoom     = null; // currently open room data
 
 // ── PIN ──
 let pinVal = "";
-function pinPress(n) { if (pinVal.length>=4) return; pinVal+=n; updatePinDots(); if (pinVal.length===4) setTimeout(checkPin,200); }
+function pinPress(n) {
+  if (pinVal.length >= 4) return;
+  pinVal += n;           // n is a string
+  updatePinDots();
+  if (pinVal.length === 4) setTimeout(checkPin, 200);
+}
 function pinDel()   { pinVal=pinVal.slice(0,-1); updatePinDots(); }
 function pinClear() { pinVal=""; updatePinDots(); document.getElementById("pin-error").textContent=""; }
 function updatePinDots() {
-  [0,1,2,3].forEach(i => document.getElementById("d"+i).classList.toggle("filled", i < pinVal.length));
+  [0,1,2,3].forEach(i => {
+    const el = document.getElementById("d" + i);
+    if (!el) return;
+    el.classList.toggle("filled", i < pinVal.length);
+  });
 }
 
 function checkPin() {
@@ -463,12 +472,13 @@ function checkPin() {
 
         initApp(); // ✅ ONLY called after auth
       })
-      .catch((error) => {
-        console.error("Auth error:", error);
-        document.getElementById("pin-error").textContent =
-          "Authentication failed";
-      });
-
+     
+catch(error => {
+  console.error(error.code, error.message);
+  document.getElementById("pin-error").textContent =
+    error.code || "Authentication failed";
+});
+     
   } else {
     document.getElementById("pin-error").textContent = "Incorrect PIN";
     pinVal = "";
