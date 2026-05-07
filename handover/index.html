@@ -495,6 +495,7 @@ function initRoomState(room) {
     skipped:      false,
     bowels:       false,
     bristolType:  null,
+    bowelSize:    null,
     breakfast:    null,
     lunch:        null,
     dinner:       null,
@@ -618,9 +619,34 @@ function buildBristolGrid(room) {
       updateChips(room);
     };
     grid.appendChild(btn);
-  });
-}
+});
 
+// Size selector
+const sizeLabel = document.createElement("div");
+sizeLabel.style.cssText = "font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;margin:10px 0 6px;grid-column:1/-1";
+sizeLabel.textContent = "Bowel size:";
+grid.parentNode.appendChild(sizeLabel);
+
+const sizeGrid = document.createElement("div");
+sizeGrid.className = "bristol-grid";
+sizeGrid.id = `bowel-size-grid-${room}`;
+sizeGrid.style.gridTemplateColumns = "repeat(2,1fr)";
+grid.parentNode.appendChild(sizeGrid);
+
+["Small","Medium","Large","Extra Large"].forEach(size => {
+  const btn = document.createElement("button");
+  btn.className = "bristol-btn";
+  btn.innerHTML = `<span class="type-num" style="font-size:13px">${size}</span>`;
+  btn.onclick = () => {
+    sizeGrid.querySelectorAll(".bristol-btn").forEach(x => x.classList.remove("selected"));
+    btn.classList.add("selected");
+    roomState[room].bowelSize = size;
+    updateChips(room);
+  };
+  sizeGrid.appendChild(btn);
+});
+}
+   
 // ── MEAL BUTTONS ──
 function buildMealButtons(room) {
   ["breakfast","lunch","dinner"].forEach(meal => {
@@ -717,7 +743,7 @@ function updateChips(room) {
   if (s.skipped) {
     chips.push(`<span class="sum-chip sum-chip-muted">Skipped</span>`);
   } else {
-    if (s.bowels) chips.push(`<span class="sum-chip sum-chip-ok">Bowels ✓${s.bristolType?" T"+s.bristolType:""}</span>`);
+    if (s.bowels) chips.push(`<span class="sum-chip sum-chip-ok">Bowels ✓${s.bristolType?" T"+s.bristolType:""}${s.bowelSize?" · "+s.bowelSize:""}</span>`);
     const meals = [s.breakfast, s.lunch, s.dinner].filter(Boolean);
     if (meals.length) {
       const hasLow = [s.breakfast,s.lunch,s.dinner].some(v => ["0%","25%"].includes(v));
@@ -774,6 +800,7 @@ async function submitAll() {
       ward,
       bowels:      s.bowels,
       bristolType: s.bristolType,
+      bowelSize:   s.bowelSize,
       meals: {
         breakfast: s.breakfast,
         lunch:     s.lunch,
