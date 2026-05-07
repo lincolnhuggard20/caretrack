@@ -735,9 +735,9 @@ function exportRoom() {
   r.entries.forEach(e => {
     const t = new Date(e.timestamp).toLocaleTimeString("en-AU",{timeZone:"Australia/Brisbane",hour:"2-digit",minute:"2-digit"});
     text += `Recorded: ${t}\n`;
-    text += e.bowels
-      ? `Bowels: Yes${e.bristolType ? " — Bristol Type "+e.bristolType+" ("+bristolDesc(e.bristolType)+")" : ""}\n`
-      : `Bowels: Not recorded\n`;
+text += e.bowels
+  ? `Bowels: Yes${e.bristolType ? " — Bristol Type "+e.bristolType+" ("+bristolDesc(e.bristolType)+")" : ""}${e.bowelSize ? ", "+e.bowelSize+" amount" : ""}\n`
+  : `Bowels: Not recorded\n`;
     if (e.meals) text += `Meals: Breakfast ${e.meals.breakfast||"—"} / Lunch ${e.meals.lunch||"—"} / Dinner ${e.meals.dinner||"—"}\n`;
     if (e.fluidMl) text += `Fluids: ${e.fluidMl}mL\n`;
     if ((e.behaviours||[]).length) text += `Behaviours: ${e.behaviours.join(", ")}\n`;
