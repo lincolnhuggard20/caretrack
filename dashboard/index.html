@@ -27,7 +27,7 @@
   --bg:     #0F172A;
   --card:   #1E293B;
   --border: #334155;
-  --text:   #FFFFFF;
+  --:   #FFFFFF;
   --muted:  #FFFFFF;
   --danger: #E05252;
   --warn:   #D4A24A;
@@ -40,7 +40,7 @@
 body {
   font-family: 'DM Sans', sans-serif;
   background: var(--bg);
-  color: var(--text);
+  color: var(--);
   min-height: 100vh;
 }
 
@@ -49,7 +49,7 @@ body {
   display: flex; flex-direction: column; align-items: center;
   justify-content: center; min-height: 100vh; gap: 28px;
 }
-.pin-logo { font-size: 13px; font-family: 'DM Mono', monospace; letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase; }
+.pin-logo { font-size: 13px; font-family: 'DM Mono', monospace; letter-spacing: 0.18em; color: var(--muted); -transform: uppercase; }
 .pin-title { font-size: 32px; font-weight: 600; letter-spacing: -0.03em; }
 .pin-sub   { font-size: 14px; color: var(--muted); }
 .pin-display { display: flex; gap: 14px; }
@@ -824,7 +824,8 @@ function exportWard() {
     if (!e) { text += "  No entry recorded in last 24 hours.\n\n"; return; }
     const t = new Date(e.timestamp).toLocaleTimeString("en-AU",{timeZone:"Australia/Brisbane",hour:"2-digit",minute:"2-digit"});
     text += `  Recorded: ${t}\n`;
-    text += e.bowels ? `  Bowels: Yes${e.bristolType?" — Bristol Type "+e.bristolType+" ("+bristolDesc(e.bristolType)+")":""}\n` : `  Bowels: Not recorded\n`;
+    text += e.bowels  ? `Bowels: Yes${e.bristolType ? " — Bristol Type "+e.bristolType+" ("+bristolDesc(e.bristolType)+")" : ""}${e.bowelSize ? ", "+e.bowelSize+" amount" : ""}\n`
+  : `Bowels: Not recorded\n`;
     if (e.meals) text += `  Meals: Breakfast ${e.meals.breakfast||"—"} / Lunch ${e.meals.lunch||"—"} / Dinner ${e.meals.dinner||"—"}\n`;
     if (e.fluidMl) text += `  Fluids: ${e.fluidMl}mL\n`;
     if ((e.behaviours||[]).length) text += `  Behaviours: ${e.behaviours.join(", ")}\n`;
