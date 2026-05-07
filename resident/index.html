@@ -308,6 +308,8 @@ body {
       <div id="bristol-section" style="display:none">
         <div style="font-size:13px;color:var(--muted);margin-top:14px;margin-bottom:8px">Bristol Stool Scale — select type:</div>
         <div class="bristol-grid" id="bristol-grid"></div>
+          <div style="font-size:13px;color:var(--muted);margin-top:12px;margin-bottom:8px">Bowel size:</div>
+          <div class="bristol-grid" id="bowel-size-grid" style="grid-template-columns:repeat(2,1fr)"></div>
       </div>
     </div>
   </div>
@@ -461,6 +463,7 @@ function checkPin() {
 
 // ── BRISTOL GRID ──
 let selectedBristol = null;
+let selectedBowelSize = null;
 BRISTOL_TYPES.forEach(b => {
   const btn = document.createElement("button");
   btn.className = "bristol-btn";
@@ -471,6 +474,19 @@ BRISTOL_TYPES.forEach(b => {
     selectedBristol = b.type;
   };
   document.getElementById("bristol-grid").appendChild(btn);
+});
+  // ── BOWEL SIZE SELECTOR ──
+const sizeWrap = document.getElementById("bowel-size-grid");
+["Small","Medium","Large","Extra Large"].forEach(size => {
+  const btn = document.createElement("button");
+  btn.className = "bristol-btn";
+  btn.innerHTML = `<span class="type-num" style="font-size:13px">${size}</span>`;
+  btn.onclick = () => {
+    sizeWrap.querySelectorAll(".bristol-btn").forEach(x => x.classList.remove("selected"));
+    btn.classList.add("selected");
+    selectedBowelSize = size;
+  };
+  sizeWrap.appendChild(btn);
 });
 
 // ── MEAL BUTTONS ──
@@ -532,6 +548,7 @@ async function submitEntry() {
     ward:        ward,
     bowels:      document.getElementById("bowels-toggle").checked,
     bristolType: selectedBristol,
+    bowelSize:   selectedBowelSize,
     meals:       { ...mealSelections },
     fluidMl:     parseInt(document.getElementById("fluid-input").value) || 0,
     behaviours:  [...checkedBehaviours],
@@ -563,8 +580,9 @@ async function submitEntry() {
 function resetForm() {
   document.getElementById("bowels-toggle").checked = false;
   document.getElementById("bristol-section").style.display = "none";
-  document.querySelectorAll(".bristol-btn").forEach(x => x.classList.remove("selected"));
   selectedBristol = null;
+  selectedBowelSize = null;
+  document.querySelectorAll(".bristol-btn").forEach(x => x.classList.remove("selected"));
   meals.forEach(m => {
     mealSelections[m] = null;
     document.getElementById("meal-" + m).querySelectorAll(".pct-btn").forEach(x => x.classList.remove("selected"));
@@ -596,7 +614,7 @@ function loadHistory() {
 
       list.innerHTML = entries.map(e => {
         const chips = [];
-        if (e.bowels) chips.push(`<span class="chip chip-bowels">Bowels ✓${e.bristolType ? " · T"+e.bristolType : ""}</span>`);
+        if (e.bowels) chips.push(`<span class="chip chip-bowels">Bowels ✓${e.bristolType ? " · T"+e.bristolType : ""}${e.bowelSize ? " · "+e.bowelSize : ""}</span>`);
         const mealArr = Object.entries(e.meals||{}).filter(([,v])=>v).map(([k,v])=>`${k[0].toUpperCase()} ${v}`);
         if (mealArr.length) chips.push(`<span class="chip chip-meal">${mealArr.join(" · ")}</span>`);
         if (e.fluidMl) chips.push(`<span class="chip chip-meal">💧 ${e.fluidMl}mL</span>`);
